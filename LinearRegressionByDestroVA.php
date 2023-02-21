@@ -19,7 +19,35 @@ class LinearRegressionByDestroVA {
         $this->n = count($x[0]);
         $this->coefficients = array_fill(0, $this->n, 0);
         $this->intercept = 0;
-	}
+	} 
+    
+    public function fit() {
+        for ($i = 0; $i < $this->epochs; $i++) {
+            $predictions = $this->predict($this->x);
+            $this->cost = $this->cost($predictions);
+            $this->update_coefficients($predictions);
+        }
+    }
+    
+    public function predict($x) {
+        $predictions = array();
+        for ($i = 0; $i < $this->m; $i++) {
+            $prediction = $this->intercept;
+            for ($j = 0; $j < $this->n; $j++) {
+                $prediction += $this->coefficients[$j] * $x[$i][$j];
+            }
+            $predictions[] = $prediction;
+        }
+        return $predictions;
+    }
+    
+    public function cost($predictions) {
+        $cost = 0;
+        for ($i = 0; $i < $this->m; $i++) {
+            $cost += pow($predictions[$i] - $this->y[$i], 2);
+        }
+        return $cost / (2 * $this->m);
+    }
     
     public function update_coefficients($predictions) {
         $d_intercept = 0;
